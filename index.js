@@ -18,16 +18,22 @@ export async function connectToMongoDB() {
     console.dir(err);
   }
 }
-const mongoClient =await connectToMongoDB();
-const db = mongoClient.db("wanderlust")
-const destinationCollection=db.collection("destination")
+const mongoClient = await connectToMongoDB();
+const db = mongoClient.db("wanderlust");
+const destinationCollection = db.collection("destination");
 app.get("/", (req, res) => {
   res.send({ massage: "hello" });
 });
 
 app.post("/add-destination", async (req, res) => {
   const data = req.body;
-  const result= await destinationCollection.insertOne(data)
+  const result = await destinationCollection.insertOne(data);
+  console.log(result);
+  res.send(result);
+});
+
+app.get("/destinations", async (req, res) => {
+  const result = await destinationCollection.find().toArray();
   console.log(result);
   res.send(result);
 });
