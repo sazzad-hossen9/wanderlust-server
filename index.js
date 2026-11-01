@@ -38,6 +38,11 @@ app.get("/destinations", async (req, res) => {
   res.send(result);
 });
 
+app.get("/destination/:id",async(req,res)=>{
+  const id = req.params.id
+  console.log(id)
+  res.send({id})
+})
 app.listen(PORT, () => {
   console.log(`server in ruining is PORT ${PORT}`);
 });
