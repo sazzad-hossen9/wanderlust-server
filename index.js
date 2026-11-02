@@ -53,6 +53,14 @@ app.patch("/destination/:id", async (req, res) => {
   );
   res.status(200).json(result);
 });
+
+app.delete("/destination/:id", async (req, res) => {
+  const id = req.params.id;
+  const result = await destinationCollection.deleteOne({
+    _id: new ObjectId(id),
+  });
+  res.json(result);
+});
 app.listen(PORT, () => {
   console.log(`server in ruining is PORT ${PORT}`);
 });
