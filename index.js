@@ -1,6 +1,6 @@
 import express from "express";
 import "dotenv/config";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 import cors from "cors";
 const app = express();
@@ -38,11 +38,21 @@ app.get("/destinations", async (req, res) => {
   res.send(result);
 });
 
-app.get("/destination/:id",async(req,res)=>{
-  const id = req.params.id
-  console.log(id)
-  res.send({id})
-})
+app.get("/destination/:id", async (req, res) => {
+  const id = req.params.id;
+  const result = await destinationCollection.findOne({ _id: new ObjectId(id) });
+  res.send(result);
+});
+
+app.patch("/destination/:id", async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+  const result = await destinationCollection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: data },
+  );
+  res.status(200).json(result);
+});
 app.listen(PORT, () => {
   console.log(`server in ruining is PORT ${PORT}`);
 });
