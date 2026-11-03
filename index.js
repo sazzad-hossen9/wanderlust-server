@@ -21,6 +21,7 @@ export async function connectToMongoDB() {
 const mongoClient = await connectToMongoDB();
 const db = mongoClient.db("wanderlust");
 const destinationCollection = db.collection("destination");
+const bookingCollection = db.collection("bookings");
 app.get("/", (req, res) => {
   res.send({ massage: "hello" });
 });
@@ -60,6 +61,25 @@ app.delete("/destination/:id", async (req, res) => {
     _id: new ObjectId(id),
   });
   res.json(result);
+});
+
+//booking
+app.post("/booking", async (req, res) => {
+  const data = req.body;
+  const result = await bookingCollection.insertOne(data);
+  res.send(result);
+});
+
+//http://localhost:5000/my-booking/email
+app.get("/my-booking/:email", async (req, res) => {
+  const { email } = req.params;
+  const result = await bookingCollection.find({ email: email }).toArray();
+  res.send(result);
+});
+app.delete("/my-booking/:id", async (req, res) => {
+  const { id } = req.params;
+  const result = await bookingCollection.deleteOne({ _id: new ObjectId(id) });
+  res.send(result);
 });
 app.listen(PORT, () => {
   console.log(`server in ruining is PORT ${PORT}`);
