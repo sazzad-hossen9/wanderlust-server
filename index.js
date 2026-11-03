@@ -39,11 +39,23 @@ app.get("/destinations", async (req, res) => {
   res.send(result);
 });
 
-app.get("/destination/:id", async (req, res) => {
-  const id = req.params.id;
-  const result = await destinationCollection.findOne({ _id: new ObjectId(id) });
-  res.send(result);
-});
+app.get(
+  "/destination/:id",
+  (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader !== "user is logged in") {
+      return res.status(401).send({ massage: "unauthorize" });
+    }
+    next();
+  },
+  async (req, res) => {
+    const id = req.params.id;
+    const result = await destinationCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    res.send(result);
+  },
+);
 
 app.patch("/destination/:id", async (req, res) => {
   const id = req.params.id;
